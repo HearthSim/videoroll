@@ -293,7 +293,7 @@
 				var video = data.items[0];
 				modal.find('.modal-title').text(video.snippet.title);
 				modal.find('.video-description').multiline(video.snippet.description);
-				modal.find('.video-iframe').attr("src", "//www.youtube.com/embed/" + video_id + "?rel=0&amp;showsearch=0&amp;autohide=2&amp;autoplay=1&amp;controls=1&amp;fs=1&amp;loop=0&amp;showinfo=0&amp;color=red&amp;theme=light&amp;wmode=transparent");
+				modal.find('.video-iframe').attr("src", "//www.youtube.com/embed/" + video_id + "?rel=0&amp;showsearch=0&amp;autohide=2&amp;autoplay=0&amp;controls=1&amp;fs=1&amp;loop=0&amp;showinfo=0&amp;color=red&amp;theme=light&amp;wmode=transparent");
 				modal.find('.logs').html(button.parent().parent().find('.logs').html());
 				modal.find('.issues').html(button.parent().parent().find('.issues').html());
 			},
