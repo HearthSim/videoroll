@@ -7,19 +7,40 @@
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 
+<!-- Bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
 <!-- jPList -->
 <link href="{{ url_for('static', filename='jplist.core.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('static', filename='jplist.core.min.js') }}"></script>
 <link href="{{ url_for('static', filename='jplist.textbox-filter.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('static', filename='jplist.textbox-filter.min.js') }}"></script>
+<!-- <link href="{{ url_for('static', filename='jplist.pagination-bundle.min.css') }}" rel="stylesheet" type="text/css" />
+<script src="{{ url_for('static', filename='jplist.pagination-bundle.min.js') }}"></script>
+ -->
+
 
 <!-- jQuery YouTube Popup -->
 <script src="{{ url_for('static', filename='jquery.youtubepopup.min.js') }}"></script>
 
-<div class="box">
-	<div class="center">
-		<div id="videos" class="box jplist" style="margin: 20px 0 50px 0">
-			<div class="jplist-panel box panel-top">
+<style>
+.panel {
+	overflow: auto;
+}
+.youtube-button {
+	padding-bottom: 20px;
+}
+</style>
+
+<div class="container">
+	<div class="header clearfix">
+		<h2 class="text-muted">Hearthsim Science Video Archive</h2>
+	</div>
+
+	<div id="videos">
+		<div class="panel panel-default">
+			<div class="panel-body jplist-panel">
 				<!-- filter by title -->
 				<div class="text-filter-box">
 					<input
@@ -71,65 +92,83 @@
 						data-control-action="filter"
 					/>
 				</div>
-
 			</div>
+		</div>
 
-			<br/>
+		<div class="list text-shadow">
 
-			<div class="list box text-shadow">
-
-				{% for name, metadata in videos %}
-				<div class="list-item box">
+			{% for name, metadata in videos %}
+			<div class="list-item panel panel-default">
+				<div class="panel-heading">
 					<h3 class="name">{{ name }}</h3>
+				</div>
+				<div class="panel-body">
 
-					<a class="youtube" href="http://www.youtube.com/embed/{{ metadata['url'] }}"><button>Video</button></a>
+					<div class="youtube-button">
+						<a class="youtube btn btn-default btn-lg" href="http://www.youtube.com/embed/{{ metadata['url'] }}"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Play Video</a>
+					</div>
 
-					<h4>Build</h4>
-					<span class="build">{{ metadata['build'] }}</span><br/>
+					<div>
+						<h4>Build</h4>
+						<span class="build">{{ metadata['build'] }}</span><br/>
+					</div>
+				</div>
 
+				<div class="col-md-4">
 					<h4>Tags</h4>
-					<ul class="tags">
+					<ul class="tags list-group">
 						{% if metadata['tags'] %}
 							{% for tag in metadata['tags'] %}
-							<li class="tag">{{ tag.strip() }}</li>
+							<li class="tag list-group-item">{{ tag.strip() }}</li>
 							{% endfor %}
 						{% else %}
-							<li class="tag">Untagged</li>
+							<li class="tag list-group-item">Untagged</li>
 						{% endif %}
-					</ul><br/>
+					</ul>
+				</div>
 
+				<div class="col-md-4">
 					<h4>Cards</h4>
-					<ul class="cards">
+					<ul class="cards list-group">
 						{% if metadata['cards'] %}
 							{% for card in metadata['cards'] %}
-							<li class="card_nameid">
+							<li class="card_nameid list-group-item">
 								<span class="card">{{ card }}</span> (<span class="card">GVG_000</span>)
 							</li>
 							{% endfor %}
 						{% else %}
-							<li class="card_nameid">
+							<li class="card_nameid list-group-item">
 								<span class="card">None</span> (<span class="card">None</span>)
 							</li>
 						{% endif %}
-					</ul><br/>
+					</ul>
+				</div>
 
+				<div class="col-md-4">
 					<h4>Logs</h4>
-					<ul class="logs">
+					<ul class="logs list-group">
 						{% if metadata['logs'] %}
 							{% for log in metadata['logs'] %}
-							<li class="log_href">
+							<li class="log_href list-group-item">
 								<a class="log" href="{{ log }}">{{ log }}</a>
 							</li>
 							{% endfor %}
 						{% else %}
-							<li class="log_href">
+							<li class="log_href list-group-item">
 								<span class="log">None</span>
 							</li>
 						{% endif %}
-					</ul><br/>
+					</ul>
 				</div>
-				{% endfor %}
+
+				<div>&nbsp;</div>
 			</div>
+			{% endfor %}
+
+			<!-- <div class="box jplist-no-results text-shadow align-center">
+				<p>No results found</p>
+			</div> -->
+
 		</div>
 	</div>
 </div>
