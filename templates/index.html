@@ -5,7 +5,6 @@
 <!-- jQuery library -->
 <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
-<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> -->
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -16,13 +15,6 @@
 <script src="{{ url_for('static', filename='jplist.core.min.js') }}"></script>
 <link href="{{ url_for('static', filename='jplist.textbox-filter.min.css') }}" rel="stylesheet" type="text/css" />
 <script src="{{ url_for('static', filename='jplist.textbox-filter.min.js') }}"></script>
-<!-- <link href="{{ url_for('static', filename='jplist.pagination-bundle.min.css') }}" rel="stylesheet" type="text/css" />
-<script src="{{ url_for('static', filename='jplist.pagination-bundle.min.js') }}"></script>
- -->
-
-
-<!-- Bootstrap YouTube Popup -->
-<!-- <script src="{{ url_for('static', filename='bootstrap.youtubepopup.min.js') }}"></script> -->
 
 <style>
 .panel {
@@ -35,13 +27,15 @@
 	margin-top: 5px !important;
 	margin-bottom: 5px !important;
 }
+.list-group-item {
+	display: inline;
+	padding: 2px 3px;
+}
 </style>
-
-
 
 <div class="container">
 	<div class="header clearfix">
-		<h2 class="text-muted">Hearthsim Science Video Archive</h2>
+		<h2 class="text-muted">Hearthstone Videos</h2>
 	</div>
 
 	<div id="videos">
@@ -58,6 +52,7 @@
 						data-control-type="textbox"
 						data-control-name="title-filter"
 						data-control-action="filter"
+						autofocus="autofocus"
 					/>
 				</div>
 
@@ -116,52 +111,33 @@
 
 			{% for name, metadata in videos %}
 			<div class="list-item panel panel-default">
-				<div class="panel-heading">
-					<h3 class="name">{{ name }}</h3>
-				</div>
-
-				<div class="col-sm-3">
-					<h4>Video</h4>
-					<button type="button" data-toggle="modal" data-target="#video-modal" data-video="{{ metadata['url'] }}" class="btn btn-default video-button btn-block" disabled="true">
+				<div class="col-sm-2">
+					<a href="javascript;" data-toggle="modal" data-target="#video-modal" data-video="{{ metadata['url'] }}" class="video-thumbnail video-button">
 						<img src="" alt="" class="pull-left video-thumbnail">
-					</button>
+					</a>
 				</div>
 
-				<div class="col-sm-3">
-					<h4>Build</h4>
-					<div class="list-group">
-						<li data-filter="build" class="build list-group-item">{{ metadata['build'] }}</li>
-					</div>
-				</div>
+				<div class="col-sm-7">
+					<h3 class="name">{{ name }}</h3>
+					<p>
+						Build: <a data-filter="build" class="build list-group-item" href="javascript:;">{{ metadata['build'] }}</a>
+					</p>
 
-				<div class="col-sm-3">
-					<h4>Tags</h4>
-					<ul class="tags list-group">
-						{% if metadata['tags'] %}
-							{% for tag in metadata['tags'] %}
-							<li data-filter="tag" class="tag list-group-item">{{ tag.strip() }}</li>
-							{% endfor %}
-						{% else %}
-							<li data-filter="tag" class="tag list-group-item">Untagged</li>
-						{% endif %}
-					</ul>
-				</div>
+					{% if metadata['tags'] %}
+						<p>Tags:
+						{% for tag in metadata['tags'] %}
+							<a data-filter="tag" class="tag list-group-item" href="javascript:;">{{ tag.strip() }}</a>
+						{% endfor %}
+						</p>
+					{% endif %}
 
-				<div class="col-sm-3">
-					<h4>Cards</h4>
-					<ul class="cards list-group">
-						{% if metadata['cards'] %}
-							{% for card in metadata['cards'] %}
-							<li data-filter="card" class="card_nameid list-group-item">
-								<span class="card">{{ card }}</span><!--  (<span class="card">GVG_000</span>) -->
-							</li>
-							{% endfor %}
-						{% else %}
-							<li data-filter="card" class="card_nameid list-group-item">
-								<span class="card">None</span><!--  (<span class="card">None</span>) -->
-							</li>
-						{% endif %}
-					</ul>
+					{% if metadata['cards'] %}
+						<p>Cards:
+						{% for card in metadata['cards'] %}
+							<a data-filter="card" class="card list-group-item" href="javascript:;">{{ card }}</a>
+						{% endfor %}
+						</p>
+					{% endif %}
 				</div>
 
 				<div class="logs" style="display: none;">
