@@ -50,6 +50,7 @@
 				<!-- filter by title -->
 				<div class="text-filter-box">
 					<input
+						class="filter-box-input"
 						data-path=".name"
 						type="text"
 						value=""
@@ -63,6 +64,8 @@
 				<!-- filter by tag -->
 				<div class="text-filter-box">
 					<input
+						class="filter-box-input"
+						id="tag-filter-box-input"
 						data-path=".tag"
 						type="text"
 						value=""
@@ -73,9 +76,11 @@
 					/>
 				</div>
 
-				<!-- filter by tag -->
+				<!-- filter by card -->
 				<div class="text-filter-box">
 					<input
+						class="filter-box-input"
+						id="card-filter-box-input"
 						data-path=".card"
 						type="text"
 						value=""
@@ -86,9 +91,11 @@
 					/>
 				</div>
 
-				<!-- filter by tag -->
+				<!-- filter by build -->
 				<div class="text-filter-box">
 					<input
+						class="filter-box-input"
+						id="build-filter-box-input"
 						data-path=".build"
 						type="text"
 						value=""
@@ -98,6 +105,10 @@
 						data-control-action="filter"
 					/>
 				</div>
+
+				<button type="button" class="btn btn-default" id="clear-filters-button">
+					<span class="glyphicon glyphicon-erase" aria-hidden="true"></span> Clear filters
+				</button>
 			</div>
 		</div>
 
@@ -119,7 +130,7 @@
 				<div class="col-sm-3">
 					<h4>Build</h4>
 					<div class="list-group">
-						<li class= "build list-group-item">{{ metadata['build'] }}</li>
+						<li data-filter="build" class="build list-group-item">{{ metadata['build'] }}</li>
 					</div>
 				</div>
 
@@ -128,10 +139,10 @@
 					<ul class="tags list-group">
 						{% if metadata['tags'] %}
 							{% for tag in metadata['tags'] %}
-							<li class="tag list-group-item">{{ tag.strip() }}</li>
+							<li data-filter="tag" class="tag list-group-item">{{ tag.strip() }}</li>
 							{% endfor %}
 						{% else %}
-							<li class="tag list-group-item">Untagged</li>
+							<li data-filter="tag" class="tag list-group-item">Untagged</li>
 						{% endif %}
 					</ul>
 				</div>
@@ -141,12 +152,12 @@
 					<ul class="cards list-group">
 						{% if metadata['cards'] %}
 							{% for card in metadata['cards'] %}
-							<li class="card_nameid list-group-item">
+							<li data-filter="card" class="card_nameid list-group-item">
 								<span class="card">{{ card }}</span><!--  (<span class="card">GVG_000</span>) -->
 							</li>
 							{% endfor %}
 						{% else %}
-							<li class="card_nameid list-group-item">
+							<li data-filter="card" class="card_nameid list-group-item">
 								<span class="card">None</span><!--  (<span class="card">None</span>) -->
 							</li>
 						{% endif %}
@@ -206,6 +217,12 @@
 		return this;
 	}
 
+	if(typeof(String.prototype.trim) === "undefined") {
+		String.prototype.trim = function(){
+			return String(this).replace(/^\s+|\s+$/g, '');
+		};
+	}
+
 	$('document').ready(function(){
 		$('#videos').jplist({
 			itemsBox: '.list',
@@ -213,6 +230,17 @@
 			panelPath: '.jplist-panel'
 		});
 
+		$('.list-group-item').on( "click", function() {
+			$('.filter-box-input').val("");
+			var filter_by = $(this).data('filter');
+			var filter = $('#' + filter_by + '-filter-box-input').val(this.textContent.trim());
+			$('#tag-filter-box-input').trigger('keyup'); // refresh filtering
+		});
+
+		$('#clear-filters-button').on( "click", function() {
+			$('.filter-box-input').val("");
+			$('#tag-filter-box-input').trigger('keyup'); // refresh filtering
+		});
 
 		$('.video-button').each(function() {
 			var that = this;
