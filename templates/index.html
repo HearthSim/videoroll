@@ -5,7 +5,7 @@
 <!-- jQuery library -->
 <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script> -->
 
 <!-- Bootstrap -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -22,7 +22,7 @@
 
 
 <!-- Bootstrap YouTube Popup -->
-<script src="{{ url_for('static', filename='bootstrap.youtubepopup.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='bootstrap.youtubepopup.min.js') }}"></script> -->
 
 <style>
 .panel {
@@ -31,13 +31,13 @@
 .disabled {
 	color: gray;
 }
-.video-thumbnail {
-	margin-bottom: 20px;
-}
-.youtube-button {
-	padding-bottom: 20px;
+.name{
+	margin-top: 5px !important;
+	margin-bottom: 5px !important;
 }
 </style>
+
+
 
 <div class="container">
 	<div class="header clearfix">
@@ -108,25 +108,22 @@
 				<div class="panel-heading">
 					<h3 class="name">{{ name }}</h3>
 				</div>
-				<div class="panel-body">
 
-					<img src="" alt="" class="img-rounded video-thumbnail">
+				<div class="col-sm-3">
+					<h4>Video</h4>
+					<button type="button" data-toggle="modal" data-target="#video-modal" data-video="{{ metadata['url'] }}" class="btn btn-default video-button btn-block" disabled="true">
+						<img src="" alt="" class="pull-left video-thumbnail">
+					</button>
+				</div>
 
-					<div>
-						<div class="well video-description disabled" data-video-id="{{ metadata['url'] }}">Loading...</div>
-					</div>
-
-					<div class="youtube-button">
-						<a class="youtube btn btn-default btn-lg" href="http://www.youtube.com/embed/{{ metadata['url'] }}"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Play Video</a>
-					</div>
-
-					<div>
-						<h4>Build</h4>
-						<span class="build">{{ metadata['build'] }}</span><br/>
+				<div class="col-sm-3">
+					<h4>Build</h4>
+					<div class="list-group">
+						<li class= "build list-group-item">{{ metadata['build'] }}</li>
 					</div>
 				</div>
 
-				<div class="col-md-4">
+				<div class="col-sm-3">
 					<h4>Tags</h4>
 					<ul class="tags list-group">
 						{% if metadata['tags'] %}
@@ -139,7 +136,7 @@
 					</ul>
 				</div>
 
-				<div class="col-md-4">
+				<div class="col-sm-3">
 					<h4>Cards</h4>
 					<ul class="cards list-group">
 						{% if metadata['cards'] %}
@@ -156,9 +153,9 @@
 					</ul>
 				</div>
 
-				<div class="col-md-4">
+				<div class="logs" style="display: none;">
 					<h4>Logs</h4>
-					<ul class="logs list-group">
+					<ul class="list-group">
 						{% if metadata['logs'] %}
 							{% for log in metadata['logs'] %}
 							<li class="log_href list-group-item">
@@ -173,7 +170,7 @@
 					</ul>
 				</div>
 
-				<div>&nbsp;</div>
+				&nbsp;
 			</div>
 			{% endfor %}
 
@@ -183,6 +180,23 @@
 
 		</div>
 	</div>
+
+	<div class="modal fade" id="video-modal" tabindex="-1" role="dialog" aria-labelledby="video-modal-title">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">×</button>
+					<h4 class="modal-title" id="video-modal-title">Loading...</h4>
+				</div>
+				<div class="modal-body" id="video-modal-body">
+					<iframe class="video-iframe" title="YouTube video player" width="100%" height="480" frameborder="0" allowfullscreen="" seamless=""></iframe>
+					<div class="well video-description"></div>
+					<div class="logs"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 
 <script type="text/javascript">
@@ -199,18 +213,18 @@
 			panelPath: '.jplist-panel'
 		});
 
-		$("a.youtube").YouTubeModal({});
 
-		$('.video-description').each(function() {
+		$('.video-button').each(function() {
 			var that = this;
 			$.ajax({
-				url: 'https://www.googleapis.com/youtube/v3/videos?id=' + $(this).data('video-id') + '&key={{ youtube_api_key }}&part=snippet',
+				url: "https://www.googleapis.com/youtube/v3/videos?id=" + $(this).data('video') + "&key={{ youtube_api_key }}&part=snippet",
 				success: function(data){
 					if (typeof(data.items[0]) != "undefined") {
 						var video = data.items[0];
-						$(that).multiline(video.snippet.description);
+						//$(that).multiline();
 						$(that).removeClass('disabled');
-						$(that).parent().parent().find('.video-thumbnail').attr('src', video.snippet.thumbnails.medium.url);
+						$(that).find('.video-thumbnail').attr('src', video.snippet.thumbnails.default.url);
+						$(that).attr("disabled", false);
 					} else {
 						$(that).text("Could not access video");
 					}
@@ -221,6 +235,31 @@
 			});
 		});
 
+	});
+
+	$('#video-modal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget); // Button that triggered the modal
+		var video_id = button.data('video');
+		var modal = $(this);
+		$.ajax({
+			url: "https://www.googleapis.com/youtube/v3/videos?id=" + video_id + "&key={{ youtube_api_key }}&part=snippet",
+			success: function(data){
+				var video = data.items[0];
+				modal.find('.modal-title').text(video.snippet.title);
+				modal.find('.video-description').multiline(video.snippet.description);
+				modal.find('.video-iframe').attr("src", "//www.youtube.com/embed/" + video_id + "?rel=0&amp;showsearch=0&amp;autohide=2&amp;autoplay=1&amp;controls=1&amp;fs=1&amp;loop=0&amp;showinfo=0&amp;color=red&amp;theme=light&amp;wmode=transparent");
+				modal.find('.logs').html(button.parent().parent().find('.logs').html())
+			},
+			error: function(d) {
+
+			}
+		});
+	}).on('hidden.bs.modal', function () {
+		var modal = $(this);
+		modal.find('.modal-title').text("Loading...");
+		modal.find('.video-description').text("");
+		modal.find('.video-iframe').attr("src", "");
+		modal.find('.logs').html("");
 	});
 </script>
 
