@@ -28,6 +28,12 @@
 .panel {
 	overflow: auto;
 }
+.disabled {
+	color: gray;
+}
+.video-thumbnail {
+	margin-bottom: 20px;
+}
 .youtube-button {
 	padding-bottom: 20px;
 }
@@ -104,6 +110,12 @@
 				</div>
 				<div class="panel-body">
 
+					<img src="" alt="" class="img-rounded video-thumbnail">
+
+					<div>
+						<div class="well video-description disabled" data-video-id="{{ metadata['url'] }}">Loading...</div>
+					</div>
+
 					<div class="youtube-button">
 						<a class="youtube btn btn-default btn-lg" href="http://www.youtube.com/embed/{{ metadata['url'] }}"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Play Video</a>
 					</div>
@@ -174,6 +186,12 @@
 </div>
 
 <script type="text/javascript">
+	$.fn.multiline = function(text){
+		this.text(text);
+		this.html(this.html().replace(/\n/g,'<br/>'));
+		return this;
+	}
+
 	$('document').ready(function(){
 		$('#videos').jplist({
 			itemsBox: '.list',
@@ -182,6 +200,27 @@
 		});
 
 		$("a.youtube").YouTubeModal({});
+
+		$('.video-description').each(function() {
+			var that = this;
+			$.ajax({
+				url: 'https://www.googleapis.com/youtube/v3/videos?id=' + $(this).data('video-id') + '&key={{ youtube_api_key }}&part=snippet',
+				success: function(data){
+					if (typeof(data.items[0]) != "undefined") {
+						var video = data.items[0];
+						$(that).multiline(video.snippet.description);
+						$(that).removeClass('disabled');
+						$(that).parent().parent().find('.video-thumbnail').attr('src', video.snippet.thumbnails.medium.url);
+					} else {
+						$(that).text("Could not access video");
+					}
+				},
+				error: function(d) {
+					$(that).text("Could not access video");
+				}
+			});
+		});
+
 	});
 </script>
 

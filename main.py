@@ -3,6 +3,7 @@
 import configparser, json, ast
 from flask import Flask, render_template
 
+import settings
 
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ videos = [
 
 @app.route("/")
 def video_index():
-	return render_template("index.html", videos=videos)
+	return render_template("index.html", videos=videos, youtube_api_key=settings.youtube_api_key)
 
 
 if __name__ == "__main__":
