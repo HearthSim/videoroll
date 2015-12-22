@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Video Index{% endblock %}
+{% block body %}
+
+<!-- jQuery library -->
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css" rel="stylesheet" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+
+<!-- jPList -->
+<link href="{{ url_for('static', filename='jplist.core.min.css') }}" rel="stylesheet" type="text/css" />
+<script src="{{ url_for('static', filename='jplist.core.min.js') }}"></script>
+<link href="{{ url_for('static', filename='jplist.textbox-filter.min.css') }}" rel="stylesheet" type="text/css" />
+<script src="{{ url_for('static', filename='jplist.textbox-filter.min.js') }}"></script>
+
+<!-- jQuery YouTube Popup -->
+<script src="{{ url_for('static', filename='jquery.youtubepopup.min.js') }}"></script>
+
+<div class="box">
+	<div class="center">
+		<div id="videos" class="box jplist" style="margin: 20px 0 50px 0">
+			<div class="jplist-panel box panel-top">
+				<!-- filter by title -->
+				<div class="text-filter-box">
+					<input
+						data-path=".name"
+						type="text"
+						value=""
+						placeholder="Filter by Name"
+						data-control-type="textbox"
+						data-control-name="title-filter"
+						data-control-action="filter"
+					/>
+				</div>
+
+				<!-- filter by tag -->
+				<div class="text-filter-box">
+					<input
+						data-path=".tag"
+						type="text"
+						value=""
+						placeholder="Filter by Tag"
+						data-control-type="textbox"
+						data-control-name="tag-filter"
+						data-control-action="filter"
+					/>
+				</div>
+
+				<!-- filter by tag -->
+				<div class="text-filter-box">
+					<input
+						data-path=".card"
+						type="text"
+						value=""
+						placeholder="Filter by Card"
+						data-control-type="textbox"
+						data-control-name="card-filter"
+						data-control-action="filter"
+					/>
+				</div>
+
+				<!-- filter by tag -->
+				<div class="text-filter-box">
+					<input
+						data-path=".build"
+						type="text"
+						value=""
+						placeholder="Filter by Build"
+						data-control-type="textbox"
+						data-control-name="build-filter"
+						data-control-action="filter"
+					/>
+				</div>
+
+			</div>
+
+			<br/>
+
+			<div class="list box text-shadow">
+
+				{% for name, metadata in videos %}
+				<div class="list-item box">
+					<h3 class="name">{{ name }}</h3>
+
+					<a class="youtube" href="http://www.youtube.com/embed/{{ metadata['url'] }}"><button>Video</button></a>
+
+					<h4>Build</h4>
+					<span class="build">{{ metadata['build'] }}</span><br/>
+
+					<h4>Tags</h4>
+					<ul class="tags">
+						{% if metadata['tags'] %}
+							{% for tag in metadata['tags'] %}
+							<li class="tag">{{ tag.strip() }}</li>
+							{% endfor %}
+						{% else %}
+							<li class="tag">Untagged</li>
+						{% endif %}
+					</ul><br/>
+
+					<h4>Cards</h4>
+					<ul class="cards">
+						{% if metadata['cards'] %}
+							{% for card in metadata['cards'] %}
+							<li class="card_nameid">
+								<span class="card">{{ card }}</span> (<span class="card">GVG_000</span>)
+							</li>
+							{% endfor %}
+						{% else %}
+							<li class="card_nameid">
+								<span class="card">None</span> (<span class="card">None</span>)
+							</li>
+						{% endif %}
+					</ul><br/>
+
+					<h4>Logs</h4>
+					<ul class="logs">
+						{% if metadata['logs'] %}
+							{% for log in metadata['logs'] %}
+							<li class="log_href">
+								<a class="log" href="{{ log }}">{{ log }}</a>
+							</li>
+							{% endfor %}
+						{% else %}
+							<li class="log_href">
+								<span class="log">None</span>
+							</li>
+						{% endif %}
+					</ul><br/>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('document').ready(function(){
+		$('#videos').jplist({
+			itemsBox: '.list',
+			itemPath: '.list-item',
+			panelPath: '.jplist-panel'
+		});
+
+		$("a.youtube").YouTubePopup({});
+	});
+</script>
+
+{% endblock %}
