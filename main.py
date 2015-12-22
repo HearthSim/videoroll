@@ -20,11 +20,12 @@ config = configparser.ConfigParser()
 config.read("data/hearthstone-science.ini")
 videos = [
 	(name, {
-		"url"   : config[name].get("url", "???"),
-		"build" : config[name].get("build", "Missing"),
-		"logs"  : parse_str_list(config[name].get("logs")),
-		"cards" : parse_str_list(config[name].get("cards")),
-		"tags"  : parse_str_list(config[name].get("tags")),
+		"url"     : config[name].get("url", "???"),
+		"build"   : config[name].get("build", "Missing"),
+		"logs"    : parse_str_list(config[name].get("logs")),
+		"cards"   : parse_str_list(config[name].get("cards")),
+		"tags"    : parse_str_list(config[name].get("tags")),
+		"issues"  : parse_str_list(config[name].get("issues")),
 	}) for name in config.sections()
 ]
 
@@ -36,4 +37,4 @@ def video_index():
 
 if __name__ == "__main__":
 	app.debug = False
-	app.run()
+	app.run(host='0.0.0.0', port=7070)
