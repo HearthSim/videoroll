@@ -145,12 +145,12 @@
 						{% if metadata['cards'] %}
 							{% for card in metadata['cards'] %}
 							<li class="card_nameid list-group-item">
-								<span class="card">{{ card }}</span> (<span class="card">GVG_000</span>)
+								<span class="card">{{ card }}</span><!--  (<span class="card">GVG_000</span>) -->
 							</li>
 							{% endfor %}
 						{% else %}
 							<li class="card_nameid list-group-item">
-								<span class="card">None</span> (<span class="card">None</span>)
+								<span class="card">None</span><!--  (<span class="card">None</span>) -->
 							</li>
 						{% endif %}
 					</ul>
