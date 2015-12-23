@@ -242,7 +242,7 @@
 		$('.video-button').each(function() {
 			var that = this;
 			$.ajax({
-				url: "https://www.googleapis.com/youtube/v3/videos?id=" + $(this).data('video') + "&key={{ youtube_api_key }}&part=snippet",
+				url: "https://www.googleapis.com/youtube/v3/videos?id=" + $(this).data('video') + "&key={{ api_key }}&part=snippet",
 				success: function(data){
 					if (typeof(data.items[0]) != "undefined") {
 						var video = data.items[0];
@@ -267,7 +267,7 @@
 		var video_id = button.data('video');
 		var modal = $(this);
 		$.ajax({
-			url: "https://www.googleapis.com/youtube/v3/videos?id=" + video_id + "&key={{ youtube_api_key }}&part=snippet",
+			url: "https://www.googleapis.com/youtube/v3/videos?id=" + video_id + "&key={{ api_key }}&part=snippet",
 			success: function(data){
 				var video = data.items[0];
 				modal.find('.modal-title').text(video.snippet.title);
