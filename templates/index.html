@@ -31,6 +31,9 @@
 	display: inline;
 	padding: 2px 3px;
 }
+.thumbnail-container{
+	padding-top: 20px;
+}
 </style>
 
 <div class="container">
@@ -111,8 +114,8 @@
 
 			{% for name, metadata in videos %}
 			<div class="list-item panel panel-default">
-				<div class="col-sm-2">
-					<a href="javascript;" data-toggle="modal" data-target="#video-modal" data-video="{{ metadata['url'] }}" class="video-thumbnail video-button">
+				<div class="col-sm-2 thumbnail-container">
+					<a href="javascript;" data-toggle="modal" data-target="#video-modal" data-video="{{ metadata['url'] }}" class="video-button">
 						<img src="" alt="" class="pull-left video-thumbnail">
 					</a>
 				</div>
